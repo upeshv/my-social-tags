@@ -96,21 +96,11 @@ function mft_save_additional_fields_meta($post_id)
 	$new = $_POST['additional_fields'];
 
 	// Sanitzing list of array
-	function sanitize_text_or_array_field($new)
+	function sanitize_function($value)
 	{
-		if (is_string($new)) {
-			$new = sanitize_text_field($new);
-		} elseif (is_array($new)) {
-			foreach ($new as $key => &$value) {
-				if (is_array($value)) {
-					$value = sanitize_text_or_array_field($value);
-				} else {
-					$value = sanitize_text_field($value);
-				}
-			}
-		}
-		return $new;
+		sanitize_text_field($value);
 	}
+	array_walk($new, "sanitize_function");
 
 	if ($new && $new !== $old) {
 		update_post_meta($post_id, 'additional_fields', $new);
